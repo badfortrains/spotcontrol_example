@@ -49,6 +49,9 @@ func main() {
 		fmt.Print("Enter a command: ")
 		text, _ := reader.ReadString('\n')
 		switch {
+		case strings.TrimSpace(text) == "load":
+			ident = getDevice(&sController, ident, reader)
+			sController.LoadTrack(ident)
 		case strings.TrimSpace(text) == "hello":
 			sController.SendHello()
 		case strings.TrimSpace(text) == "play":
