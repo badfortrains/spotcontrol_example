@@ -41,6 +41,7 @@ func main() {
 	sController := spotcontrol.SetupController(&s, username, "7288edd0fc3ffcbe93a0cf06e3568e28521687bc")
 	
 	go sController.Run()
+	sController.SendHello()
 
 	reader := bufio.NewReader(os.Stdin)
 	var ident string
