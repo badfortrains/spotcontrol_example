@@ -12,14 +12,18 @@ import (
 func chooseDevice(controller *spotcontrol.SpircController, reader *bufio.Reader) string{
 	devices := controller.ListDevices()
 	for i, d := range devices {
-		fmt.Printf("%v %v %v \n", i, d.Name, d.Ident)
+		fmt.Printf("%v) %v %v \n", i, d.Name, d.Ident)
 	}
+	
 	for {
+		fmt.Print("Enter device number: ")
 		text, _ := reader.ReadString('\n')
 		i, err := strconv.Atoi(strings.TrimSpace(text))
 		if err == nil && i < len(devices) && i >= 0{
 			return devices[i].Ident
 		}
+		fmt.Println("invalid device number")
+
 	}
 }
 
@@ -31,11 +35,25 @@ func getDevice(controller *spotcontrol.SpircController, ident string, reader *bu
 	}
 }
 
+func printHelp(){
+	fmt.Println("\nAvailable commands:")
+	fmt.Println("load <track1> [...more tracks]: load tracks by spotify base 62 id")
+	fmt.Println("hello:                          ask devices to identify themselves")
+	fmt.Println("play:                           play current track")
+	fmt.Println("pause:                          pause playing track")
+	fmt.Println("devices:                        list availbale devices")
+	fmt.Println("help:                           show this list\n")
+}
+
+
 func main() {
 	s := spotcontrol.Session{}
 	s.StartConnection()
 	s.Login()
 	s.Run()
+
+
+	//fmt.Println(convert62("3Vn9oCZbdI1EMO7jxdz2Rc"))
 
 	username := os.Getenv("SPOT_USERNAME")
 	sController := spotcontrol.SetupController(&s, username, "7288edd0fc3ffcbe93a0cf06e3568e28521687bc")
@@ -45,23 +63,28 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 	var ident string
+	printHelp()
 	for {
 		fmt.Print("Enter a command: ")
 		text, _ := reader.ReadString('\n')
+		cmds := strings.Split(strings.TrimSpace(text),  " ")
+
 		switch {
-		case strings.TrimSpace(text) == "load":
+		case cmds[0] == "load":
 			ident = getDevice(&sController, ident, reader)
-			sController.LoadTrack(ident)
-		case strings.TrimSpace(text) == "hello":
+			sController.LoadTrack(ident, cmds[1:])
+		case cmds[0] == "hello":
 			sController.SendHello()
-		case strings.TrimSpace(text) == "play":
+		case cmds[0] == "play":
 			ident = getDevice(&sController, ident, reader)
 			sController.SendPlay(ident)
-		case strings.TrimSpace(text) == "pause":
+		case cmds[0] == "pause":
 			ident = getDevice(&sController, ident, reader)
 			sController.SendPause(ident)
-		case strings.TrimSpace(text) == "device":
+		case cmds[0] == "devices":
 			ident = chooseDevice(&sController, reader)
+		case cmds[0] == "help":
+			printHelp()
 		}
 	}
 
