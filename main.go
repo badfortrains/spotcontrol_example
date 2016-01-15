@@ -1,16 +1,18 @@
 package main
 
 import (
-	"os"
 	"bufio"
 	"fmt"
 	"github.com/badfortrains/spotcontrol"
 	"strings"
 	"strconv"
+	"flag"
+	"os"
 )
 
 func chooseDevice(controller *spotcontrol.SpircController, reader *bufio.Reader) string{
 	devices := controller.ListDevices()
+	fmt.Println("\n choose a device:")
 	for i, d := range devices {
 		fmt.Printf("%v) %v %v \n", i, d.Name, d.Ident)
 	}
@@ -47,16 +49,26 @@ func printHelp(){
 
 
 func main() {
+	username := flag.String("username", "", "spotify username")
+	password := flag.String("password", "", "spotify password")
+	appkey := flag.String("appkey", "./spotify_appkey.key", "spotify appkey file path")
+	flag.Parse()
+
+	if *username == "" || *password == "" {
+		fmt.Println("need to supply a username and password")
+		fmt.Println("./spirccontroller --username SPOTIFY_USERNAME --password SPOTIFY_PASSWORD")
+		return
+	}
+
 	s := spotcontrol.Session{}
 	s.StartConnection()
-	s.Login()
+	s.Login(*username, *password, *appkey)
 	s.Run()
 
 
-	//fmt.Println(convert62("3Vn9oCZbdI1EMO7jxdz2Rc"))
+	//fmt.Println(convert62("3Vn9oCZbdI1EMO7jxdz2Rc 2nMW1mZmdIt5rZCsX1uh9J"))
 
-	username := os.Getenv("SPOT_USERNAME")
-	sController := spotcontrol.SetupController(&s, username, "7288edd0fc3ffcbe93a0cf06e3568e28521687bc")
+	sController := spotcontrol.SetupController(&s, *username, "7288edd0fc3ffcbe93a0cf06e3568e28521687bc")
 	
 	go sController.Run()
 	sController.SendHello()
