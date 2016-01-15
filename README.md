@@ -15,7 +15,7 @@ go build
 ##usage
 ````
 //in spotcontrol_example directory
-./spirccontroller --username SPOTIFY_USERNAME --password SPOTIFY_PASSWORD --appkey PATH_TO_APPKEY
+./spotcontrol_example --username SPOTIFY_USERNAME --password SPOTIFY_PASSWORD --appkey PATH_TO_APPKEY
 
 //load tracks using space deliminated list of spotify track ids
 load 3Vn9oCZbdI1EMO7jxdz2Rc 2nMW1mZmdIt5rZCsX1uh9J
