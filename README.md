@@ -6,6 +6,7 @@ Currently supports loading tracks, playing and pausing.
 
 ## Install
 `````
+go get github.com/badfortrains/spotcontrol
 go get github.com/badfortrains/spotcontrol_example
 
 //in spotcontrol_example directory
