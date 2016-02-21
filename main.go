@@ -106,8 +106,7 @@ func main() {
 
 	session.Run()
 
-	sController := spotcontrol.SetupController(session, *username, 
-		"7288edd0fc3ffcbe93a0cf06e3568e28521687bc")
+	sController := spotcontrol.SetupController(session, *username)
 	
 	go sController.Run()
 	sController.SendHello()
