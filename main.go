@@ -104,11 +104,7 @@ func main() {
 		return
 	}
 
-	session.Run()
-
 	sController := spotcontrol.SetupController(session, *username)
-	
-	go sController.Run()
 	sController.SendHello()
 
 	reader := bufio.NewReader(os.Stdin)
@@ -121,26 +117,26 @@ func main() {
 
 		switch {
 		case cmds[0] == "load":
-			ident = getDevice(&sController, ident, reader)
+			ident = getDevice(sController, ident, reader)
 			if ident != "" {
 				sController.LoadTrack(ident, cmds[1:])
 			}
 		case cmds[0] == "hello":
 			sController.SendHello()
 		case cmds[0] == "play":
-			ident = getDevice(&sController, ident, reader)
+			ident = getDevice(sController, ident, reader)
 			if ident != "" {
 				sController.SendPlay(ident)
 			}
 		case cmds[0] == "pause":
-			ident = getDevice(&sController, ident, reader)
+			ident = getDevice(sController, ident, reader)
 			if ident != "" {
 				sController.SendPause(ident)
 			}
 		case cmds[0] == "devices":
-			ident = chooseDevice(&sController, reader)
+			ident = chooseDevice(sController, reader)
 		case cmds[0] == "mdns":
-			addMdns(&sController, reader)
+			addMdns(sController, reader)
 		case cmds[0] == "help":
 			printHelp()
 		}
