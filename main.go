@@ -87,14 +87,14 @@ func main() {
 	blobPath := flag.String("blobPath", "", "path to saved blob")
 	flag.Parse()
 
-	var session *spotcontrol.Session
+	var sController *spotcontrol.SpircController
 	if *username != "" && *password != ""{
-		session = spotcontrol.Login(*username, *password, *appkey)
+		sController = spotcontrol.Login(*username, *password, *appkey)
 	} else if *blobPath != "" {
 		if _, err := os.Stat(*blobPath); os.IsNotExist(err) {
-			session = spotcontrol.LoginDiscovery(*blobPath, *appkey)
+			sController = spotcontrol.LoginDiscovery(*blobPath, *appkey)
 		} else {
-			session = spotcontrol.LoginBlobFile(*blobPath, *appkey)
+			sController = spotcontrol.LoginBlobFile(*blobPath, *appkey)
 		}
 	} else {
 		fmt.Println("need to supply a username and password or a blob file path")
@@ -103,9 +103,6 @@ func main() {
 		fmt.Println("./spirccontroller --username SPOTIFY_USERNAME --password SPOTIFY_PASSWORD")
 		return
 	}
-
-	sController := spotcontrol.SetupController(session, *username)
-	sController.SendHello()
 
 	reader := bufio.NewReader(os.Stdin)
 	var ident string
